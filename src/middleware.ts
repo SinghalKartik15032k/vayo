@@ -1,6 +1,12 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Routes that require the user to be logged in
+const protectedRoutes = ['/profile', '/bookings', '/favorites']
+
+// Routes that logged-in users should not see
+const authRoutes = ['/login', '/signup']
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -25,8 +31,23 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session if expired — required for Server Components to see auth state
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+  const { pathname } = request.nextUrl
+
+  // Logged-out user trying to access a protected route → send to login
+  if (!user && protectedRoutes.some(route => pathname.startsWith(route))) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/login'
+    redirectUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Logged-in user trying to access login/signup → send home
+  if (user && authRoutes.some(route => pathname.startsWith(route))) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/'
+    return NextResponse.redirect(redirectUrl)
+  }
 
   return supabaseResponse
 }
