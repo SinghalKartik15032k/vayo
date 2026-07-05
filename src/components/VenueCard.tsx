@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 const categoryIcons: Record<string, string> = {
   dining: '🍽',
   movies: '🎬',
@@ -10,12 +12,16 @@ const categoryIcons: Record<string, string> = {
 }
 
 export default function VenueCard({ venue }: { venue: any }) {
+  const router = useRouter()
+
   return (
-    <div style={{
-      background: 'var(--surface-1)', border: '0.5px solid var(--border-subtle)',
-      borderRadius: '14px', overflow: 'hidden', cursor: 'pointer'
-    }}>
-      {/* Image placeholder */}
+    <div
+      onClick={() => router.push(`/venues/${venue.id}`)}
+      style={{
+        background: 'var(--surface-1)', border: '0.5px solid var(--border-subtle)',
+        borderRadius: '14px', overflow: 'hidden', cursor: 'pointer'
+      }}
+    >
       <div style={{
         height: '100px', background: 'var(--surface-2)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -42,8 +48,6 @@ export default function VenueCard({ venue }: { venue: any }) {
           </div>
         )}
       </div>
-
-      {/* Body */}
       <div style={{ padding: '10px 12px 12px' }}>
         <div style={{
           fontSize: '14px', fontWeight: 500, color: '#fff',
@@ -52,7 +56,7 @@ export default function VenueCard({ venue }: { venue: any }) {
         }}>
           {venue.name}
         </div>
-        <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
           📍 {venue.cities?.name ?? venue.address}
         </div>
       </div>
