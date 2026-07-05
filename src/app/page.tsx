@@ -89,26 +89,28 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Category tabs — client component for interactivity */}
+      {/* Category tabs */}
       <CategoryTabs />
 
       {/* Quick actions */}
       <div style={{ padding: '0 24px 28px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
           {[
-            { icon: '🍽', label: 'Book a table' },
-            { icon: '🎬', label: 'Movie tickets' },
-            { icon: '⚽', label: 'Book a turf' },
-            { icon: '🎉', label: 'Events near you' },
+            { icon: '🍽', label: 'Book a table', href: '/' },
+            { icon: '🎬', label: 'Movie tickets', href: '/movies' },
+            { icon: '⚽', label: 'Book a turf', href: '/sports' },
+            { icon: '🎉', label: 'Events near you', href: '/events' },
           ].map(item => (
-            <div key={item.label} style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-              padding: '14px 8px', background: 'var(--surface-1)',
-              border: '0.5px solid var(--border-subtle)', borderRadius: '12px', cursor: 'pointer'
-            }}>
-              <span style={{ fontSize: '22px' }}>{item.icon}</span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>{item.label}</span>
-            </div>
+            <Link key={item.label} href={item.href} style={{ textDecoration: 'none' }}>
+              <div style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+                padding: '14px 8px', background: 'var(--surface-1)',
+                border: '0.5px solid var(--border-subtle)', borderRadius: '12px', cursor: 'pointer'
+              }}>
+                <span style={{ fontSize: '22px' }}>{item.icon}</span>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>{item.label}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -133,21 +135,21 @@ export default async function Home() {
         display: 'flex', justifyContent: 'space-around', padding: '10px 0 16px'
       }}>
         {[
-  { icon: '🏠', label: 'Home', href: '/', active: true },
-  { icon: '🧭', label: 'Explore', href: '/' },
-  { icon: '🎟', label: 'Bookings', href: '/bookings' },
-  { icon: '❤️', label: 'Saved', href: '/' },
-  { icon: '👤', label: 'Profile', href: '/' },
-].map(item => (
-  <Link key={item.label} href={item.href} style={{
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-    fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)',
-    cursor: 'pointer', textDecoration: 'none'
-  }}>
-    <span style={{ fontSize: '20px' }}>{item.icon}</span>
-    {item.label}
-  </Link>
-))}
+          { icon: '🏠', label: 'Home', href: '/', active: true },
+          { icon: '🧭', label: 'Explore', href: '/' },
+          { icon: '🎟', label: 'Bookings', href: '/bookings' },
+          { icon: '❤️', label: 'Saved', href: '/' },
+          { icon: '👤', label: 'Profile', href: '/' },
+        ].map(item => (
+          <Link key={item.label} href={item.href} style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+            fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)',
+            cursor: 'pointer', textDecoration: 'none'
+          }}>
+            <span style={{ fontSize: '20px' }}>{item.icon}</span>
+            {item.label}
+          </Link>
+        ))}
       </div>
 
     </main>
