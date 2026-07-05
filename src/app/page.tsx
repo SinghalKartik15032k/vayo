@@ -133,20 +133,21 @@ export default async function Home() {
         display: 'flex', justifyContent: 'space-around', padding: '10px 0 16px'
       }}>
         {[
-          { icon: '🏠', label: 'Home', active: true },
-          { icon: '🧭', label: 'Explore' },
-          { icon: '🎟', label: 'Bookings' },
-          { icon: '❤️', label: 'Saved' },
-          { icon: '👤', label: 'Profile' },
-        ].map(item => (
-          <div key={item.label} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-            fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)', cursor: 'pointer'
-          }}>
-            <span style={{ fontSize: '20px' }}>{item.icon}</span>
-            {item.label}
-          </div>
-        ))}
+  { icon: '🏠', label: 'Home', href: '/', active: true },
+  { icon: '🧭', label: 'Explore', href: '/' },
+  { icon: '🎟', label: 'Bookings', href: '/bookings' },
+  { icon: '❤️', label: 'Saved', href: '/' },
+  { icon: '👤', label: 'Profile', href: '/' },
+].map(item => (
+  <Link key={item.label} href={item.href} style={{
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+    fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)',
+    cursor: 'pointer', textDecoration: 'none'
+  }}>
+    <span style={{ fontSize: '20px' }}>{item.icon}</span>
+    {item.label}
+  </Link>
+))}
       </div>
 
     </main>
