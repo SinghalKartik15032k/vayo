@@ -1,57 +1,154 @@
 ﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
+import VenueCard from '@/components/VenueCard'
+import CategoryTabs from '@/components/CategoryTabs'
 
 export default async function Home() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: venues, error } = await supabase
+  const { data: venues } = await supabase
     .from('venues')
-    .select('name, category, address, rating_avg, cities(name)')
+    .select('id, name, category, address, rating_avg, cities(name)')
     .order('rating_avg', { ascending: false })
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '700px', margin: '0 auto' }}>
+    <main className="min-h-screen" style={{ background: 'var(--background)' }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: 0 }}>Vayo 🚀</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.9rem' }}>
+      {/* Nav */}
+      <nav style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '18px 24px', borderBottom: '0.5px solid var(--border-subtle)'
+      }}>
+        <div style={{ fontSize: '22px', fontWeight: 500, letterSpacing: '-0.5px', color: '#fff' }}>
+          vayo<span style={{ color: 'var(--vayo-accent)' }}>.</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            background: 'var(--surface-1)', border: '0.5px solid var(--border-default)',
+            borderRadius: '20px', padding: '6px 14px', fontSize: '13px', color: '#aaa', cursor: 'pointer'
+          }}>
+            📍 Mumbai
+          </div>
           {user ? (
-            <>
-              <span style={{ color: '#444' }}>
-                👋 {user.user_metadata?.full_name ?? user.email}
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '34px', height: '34px', borderRadius: '50%',
+                background: 'var(--surface-1)', border: '1.5px solid var(--vayo-accent)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '13px', fontWeight: 500, color: 'var(--vayo-accent)'
+              }}>
+                {(user.user_metadata?.full_name ?? user.email ?? 'U')[0].toUpperCase()}
+              </div>
               <LogoutButton />
-            </>
+            </div>
           ) : (
-            <>
-              <Link href="/login" style={{ color: '#444', textDecoration: 'underline' }}>Log in</Link>
-              <Link href="/signup" style={{ color: 'black', fontWeight: 600, textDecoration: 'underline' }}>Sign up</Link>
-            </>
+            <div style={{ display: 'flex', gap: '12px', fontSize: '13px' }}>
+              <Link href="/login" style={{ color: '#aaa', textDecoration: 'none' }}>Log in</Link>
+              <Link href="/signup" style={{
+                color: '#0a0a0a', background: 'var(--vayo-accent)',
+                padding: '6px 14px', borderRadius: '20px', fontWeight: 500, textDecoration: 'none'
+              }}>Sign up</Link>
+            </div>
           )}
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <div style={{ padding: '32px 24px 24px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '10px' }}>
+          {user ? `Good evening, ${user.user_metadata?.full_name?.split(' ')[0] ?? 'there'}` : 'Good evening'}
+        </div>
+        <div style={{ fontSize: '30px', fontWeight: 500, lineHeight: 1.2, letterSpacing: '-0.5px', color: '#fff', marginBottom: '6px' }}>
+          What&apos;s the<br />
+          <span style={{ color: 'var(--vayo-accent)' }}>plan tonight?</span>
+        </div>
+        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+          Dining · Movies · Events · Sports · Staycations
         </div>
       </div>
 
-      {/* Venues list */}
-      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
-      {venues && (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {venues.map((venue, i) => (
-            <li key={i} style={{ padding: '1rem', marginBottom: '0.75rem', border: '1px solid #ddd', borderRadius: '8px' }}>
-              <strong>{venue.name}</strong>
-              <div style={{ fontSize: '0.9rem', color: '#666' }}>
-                {venue.category} · {venue.address}
-              </div>
-              <div style={{ fontSize: '0.9rem' }}>
-                ⭐ {venue.rating_avg ?? '—'}
-              </div>
-            </li>
+      {/* Search bar */}
+      <div style={{
+        margin: '0 24px 24px',
+        background: 'var(--surface-1)', border: '0.5px solid var(--border-default)',
+        borderRadius: '12px', display: 'flex', alignItems: 'center',
+        padding: '12px 16px', gap: '10px'
+      }}>
+        <span style={{ fontSize: '16px' }}>🔍</span>
+        <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Search venues, movies, events…</span>
+        <div style={{
+          marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '5px',
+          background: 'var(--surface-2)', border: '0.5px solid var(--border-default)',
+          borderRadius: '8px', padding: '6px 12px', fontSize: '12px', color: 'var(--vayo-accent)'
+        }}>
+          ⚙ Filter
+        </div>
+      </div>
+
+      {/* Category tabs — client component for interactivity */}
+      <CategoryTabs />
+
+      {/* Quick actions */}
+      <div style={{ padding: '0 24px 28px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+          {[
+            { icon: '🍽', label: 'Book a table' },
+            { icon: '🎬', label: 'Movie tickets' },
+            { icon: '⚽', label: 'Book a turf' },
+            { icon: '🎉', label: 'Events near you' },
+          ].map(item => (
+            <div key={item.label} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+              padding: '14px 8px', background: 'var(--surface-1)',
+              border: '0.5px solid var(--border-subtle)', borderRadius: '12px', cursor: 'pointer'
+            }}>
+              <span style={{ fontSize: '22px' }}>{item.icon}</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>{item.label}</span>
+            </div>
           ))}
-        </ul>
-      )}
+        </div>
+      </div>
+
+      {/* Top rated venues */}
+      <div style={{ padding: '0 24px 28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div style={{ fontSize: '16px', fontWeight: 500, color: '#fff' }}>Top rated near you</div>
+          <div style={{ fontSize: '12px', color: 'var(--vayo-accent)', cursor: 'pointer' }}>See all</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+          {venues?.map(venue => (
+            <VenueCard key={venue.id} venue={venue} />
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom nav */}
+      <div style={{
+        position: 'sticky', bottom: 0,
+        background: 'var(--surface-1)', borderTop: '0.5px solid var(--border-subtle)',
+        display: 'flex', justifyContent: 'space-around', padding: '10px 0 16px'
+      }}>
+        {[
+          { icon: '🏠', label: 'Home', active: true },
+          { icon: '🧭', label: 'Explore' },
+          { icon: '🎟', label: 'Bookings' },
+          { icon: '❤️', label: 'Saved' },
+          { icon: '👤', label: 'Profile' },
+        ].map(item => (
+          <div key={item.label} style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+            fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)', cursor: 'pointer'
+          }}>
+            <span style={{ fontSize: '20px' }}>{item.icon}</span>
+            {item.label}
+          </div>
+        ))}
+      </div>
+
     </main>
   )
 }
