@@ -98,7 +98,7 @@ export default async function Home() {
           {[
             { icon: '🍽', label: 'Book a table', href: '/' },
             { icon: '🎬', label: 'Movie tickets', href: '/movies' },
-            { icon: '⚽', label: 'Book a turf', href: '/sports' },
+            { icon: '⚽', label: 'Sports & Games', href: '/sports' },
             { icon: '🎉', label: 'Events near you', href: '/events' },
           ].map(item => (
             <Link key={item.label} href={item.href} style={{ textDecoration: 'none' }}>
