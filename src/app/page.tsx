@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
 import VenueCard from '@/components/VenueCard'
-import CategoryTabs from '@/components/CategoryTabs'
+import HomeVenues from '@/components/HomeVenues'
 import DynamicGreeting from '@/components/DynamicGreeting'
 
 export default async function Home() {
@@ -86,9 +86,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Category tabs */}
-      <CategoryTabs />
-
       {/* Quick actions */}
       <div style={{ padding: '0 24px 28px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
@@ -112,18 +109,8 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Top rated venues */}
-      <div style={{ padding: '0 24px 28px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <div style={{ fontSize: '16px', fontWeight: 500, color: '#fff' }}>Top rated near you</div>
-          <div style={{ fontSize: '12px', color: 'var(--vayo-accent)', cursor: 'pointer' }}>See all</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-          {venues?.map(venue => (
-            <VenueCard key={venue.id} venue={venue} />
-          ))}
-        </div>
-      </div>
+      {/* Category tabs + venue grid */}
+      <HomeVenues venues={venues ?? []} />
 
       {/* Bottom nav */}
       <div style={{
@@ -132,7 +119,7 @@ export default async function Home() {
         display: 'flex', justifyContent: 'space-around', padding: '10px 0 16px'
       }}>
         {[
-          { icon: '🏠', label: 'Home', href: '/', active: true },
+          { icon: '🏠', label: 'Home', href: '/' },
           { icon: '🧭', label: 'Explore', href: '/' },
           { icon: '🎟', label: 'Bookings', href: '/bookings' },
           { icon: '❤️', label: 'Saved', href: '/' },
@@ -140,7 +127,7 @@ export default async function Home() {
         ].map(item => (
           <Link key={item.label} href={item.href} style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-            fontSize: '10px', color: item.active ? 'var(--vayo-accent)' : 'var(--text-muted)',
+            fontSize: '10px', color: 'var(--text-muted)',
             cursor: 'pointer', textDecoration: 'none'
           }}>
             <span style={{ fontSize: '20px' }}>{item.icon}</span>
