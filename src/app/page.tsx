@@ -1,9 +1,9 @@
 ﻿import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
-import VenueCard from '@/components/VenueCard'
 import HomeVenues from '@/components/HomeVenues'
 import DynamicGreeting from '@/components/DynamicGreeting'
+import BottomNav from '@/components/BottomNav'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -113,28 +113,7 @@ export default async function Home() {
       <HomeVenues venues={venues ?? []} />
 
       {/* Bottom nav */}
-      <div style={{
-        position: 'sticky', bottom: 0,
-        background: 'var(--surface-1)', borderTop: '0.5px solid var(--border-subtle)',
-        display: 'flex', justifyContent: 'space-around', padding: '10px 0 16px'
-      }}>
-        {[
-          { icon: '🏠', label: 'Home', href: '/' },
-          { icon: '🧭', label: 'Explore', href: '/' },
-          { icon: '🎟', label: 'Bookings', href: '/bookings' },
-          { icon: '❤️', label: 'Saved', href: '/' },
-          { icon: '👤', label: 'Profile', href: '/profile' },
-        ].map(item => (
-          <Link key={item.label} href={item.href} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-            fontSize: '10px', color: 'var(--text-muted)',
-            cursor: 'pointer', textDecoration: 'none'
-          }}>
-            <span style={{ fontSize: '20px' }}>{item.icon}</span>
-            {item.label}
-          </Link>
-        ))}
-      </div>
+      <BottomNav />
 
     </main>
   )

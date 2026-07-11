@@ -1,6 +1,7 @@
 ﻿import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import BottomNav from '@/components/BottomNav'
 
 export default async function BookingsPage() {
   const supabase = await createClient()
@@ -143,6 +144,7 @@ export default async function BookingsPage() {
           </div>
         )}
       </div>
+          <BottomNav />
     </main>
   )
 }
