@@ -3,11 +3,16 @@ import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
 import VenueCard from '@/components/VenueCard'
 import CategoryTabs from '@/components/CategoryTabs'
+import DynamicGreeting from '@/components/DynamicGreeting'
 
 export default async function Home() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('full_name, city_id, cities(name)').eq('id', user.id).single()
+    : { data: null }
 
   const { data: venues } = await supabase
     .from('venues')
@@ -31,7 +36,7 @@ export default async function Home() {
             background: 'var(--surface-1)', border: '0.5px solid var(--border-default)',
             borderRadius: '20px', padding: '6px 14px', fontSize: '13px', color: '#aaa', cursor: 'pointer'
           }}>
-            📍 Mumbai
+            📍 {profile?.cities?.name ?? 'Select city'}
           </div>
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -41,7 +46,7 @@ export default async function Home() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '13px', fontWeight: 500, color: 'var(--vayo-accent)'
               }}>
-                {(user.user_metadata?.full_name ?? user.email ?? 'U')[0].toUpperCase()}
+                {(profile?.full_name ?? user.email ?? 'U')[0].toUpperCase()}
               </div>
               <LogoutButton />
             </div>
@@ -57,19 +62,11 @@ export default async function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <div style={{ padding: '32px 24px 24px' }}>
-        <div style={{ fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '10px' }}>
-          {user ? `Good evening, ${user.user_metadata?.full_name?.split(' ')[0] ?? 'there'}` : 'Good evening'}
-        </div>
-        <div style={{ fontSize: '30px', fontWeight: 500, lineHeight: 1.2, letterSpacing: '-0.5px', color: '#fff', marginBottom: '6px' }}>
-          What&apos;s the<br />
-          <span style={{ color: 'var(--vayo-accent)' }}>plan tonight?</span>
-        </div>
-        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-          Dining · Movies · Events · Sports · Staycations
-        </div>
-      </div>
+      {/* Dynamic greeting */}
+      <DynamicGreeting
+        name={profile?.full_name ?? null}
+        city={profile?.cities?.name ?? null}
+      />
 
       {/* Search bar */}
       <div style={{
@@ -139,7 +136,7 @@ export default async function Home() {
           { icon: '🧭', label: 'Explore', href: '/' },
           { icon: '🎟', label: 'Bookings', href: '/bookings' },
           { icon: '❤️', label: 'Saved', href: '/' },
-          { icon: '👤', label: 'Profile', href: '/' },
+          { icon: '👤', label: 'Profile', href: '/profile' },
         ].map(item => (
           <Link key={item.label} href={item.href} style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
